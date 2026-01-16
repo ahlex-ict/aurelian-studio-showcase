@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import Logo from "./Logo";
+import { useScrollHeader } from "@/hooks/useScrollHeader";
 
 const navLinks = [
   { label: "Portfolio", href: "/portfolio" },
@@ -13,10 +14,17 @@ const navLinks = [
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const isVisible = useScrollHeader();
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 section-padding py-6">
-      <nav className="flex items-center justify-between">
+    <header 
+      className={`fixed top-0 left-0 right-0 z-50 section-padding py-6 transition-transform duration-300 ${
+        isVisible ? "translate-y-0" : "-translate-y-full"
+      }`}
+    >
+      <div className="absolute inset-0 bg-gradient-to-b from-background/80 to-transparent pointer-events-none" />
+      
+      <nav className="relative flex items-center justify-between">
         <Logo />
 
         {/* Desktop Navigation */}

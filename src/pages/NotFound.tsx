@@ -1,5 +1,7 @@
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useEffect } from "react";
+import Header from "@/components/Header";
+import logoIcon from "@/assets/logo-icon.png";
 
 const NotFound = () => {
   const location = useLocation();
@@ -9,13 +11,18 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">404</h1>
-        <p className="mb-4 text-xl text-muted-foreground">Oops! Page not found</p>
-        <a href="/" className="text-primary underline hover:text-primary/90">
-          Return to Home
-        </a>
+    <div className="min-h-screen flex flex-col bg-background">
+      <Header />
+      
+      <div className="flex-1 flex items-center justify-center section-padding">
+        <div className="text-center">
+          <img src={logoIcon} alt="Aurelian Studios" className="h-24 w-auto mx-auto mb-8" />
+          <h1 className="font-display text-8xl md:text-9xl text-primary mb-4">404</h1>
+          <p className="text-muted-foreground text-xl mb-8">Page not found</p>
+          <Link to="/" className="btn-primary">
+            Return Home
+          </Link>
+        </div>
       </div>
     </div>
   );

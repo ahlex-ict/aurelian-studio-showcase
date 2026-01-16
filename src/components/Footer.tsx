@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import Logo from "./Logo";
 import { Instagram, Twitter, Mail } from "lucide-react";
+import logoFull from "@/assets/logo-full.png";
 
 const Footer = () => {
   return (
@@ -8,8 +8,14 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-10">
           <div>
-            <Logo className="mb-4" />
-            <p className="text-muted-foreground max-w-md">
+            <Link to="/" className="mb-4 inline-block">
+              <img 
+                src={logoFull} 
+                alt="Aurelian Studios" 
+                className="h-12 w-auto"
+              />
+            </Link>
+            <p className="text-muted-foreground max-w-md mt-4">
               Aurelian Studios specializes in automotive photography and retouching,
               capturing the essence of automotive excellence worldwide.
             </p>

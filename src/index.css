@@ -16,8 +16,8 @@
     --popover: 0 0% 5%;
     --popover-foreground: 0 0% 100%;
 
-    /* Golden accent - signature brand color */
-    --primary: 45 100% 50%;
+    /* Golden accent - #AD8B5D converted to HSL */
+    --primary: 37 33% 52%;
     --primary-foreground: 0 0% 0%;
 
     --secondary: 0 0% 10%;
@@ -26,7 +26,7 @@
     --muted: 0 0% 15%;
     --muted-foreground: 0 0% 65%;
 
-    --accent: 45 100% 50%;
+    --accent: 37 33% 52%;
     --accent-foreground: 0 0% 0%;
 
     --destructive: 0 84.2% 60.2%;
@@ -34,14 +34,14 @@
 
     --border: 0 0% 20%;
     --input: 0 0% 15%;
-    --ring: 45 100% 50%;
+    --ring: 37 33% 52%;
 
     --radius: 0.25rem;
 
     /* Custom tokens */
     --hero-overlay: linear-gradient(
       to bottom,
-      hsla(0, 0%, 0%, 0.3) 0%,
+      hsla(0, 0%, 0%, 0.4) 0%,
       hsla(0, 0%, 0%, 0.1) 50%,
       hsla(0, 0%, 0%, 0.7) 100%
     );
@@ -51,7 +51,7 @@
       hsla(0, 0%, 0%, 0.3) 50%,
       hsla(0, 0%, 0%, 0) 100%
     );
-    --golden-glow: 0 0 30px hsla(45, 100%, 50%, 0.3);
+    --golden-glow: 0 0 30px hsla(37, 33%, 52%, 0.4);
   }
 
   .dark {
@@ -93,6 +93,32 @@
 
   .nav-link-active {
     @apply text-primary;
+  }
+
+  /* Interactive Button Styles */
+  .btn-primary {
+    @apply inline-block border-2 border-primary text-primary px-10 py-4 font-display uppercase tracking-widest text-sm 
+           relative overflow-hidden transition-all duration-300
+           hover:text-primary-foreground hover:shadow-[var(--golden-glow)];
+  }
+
+  .btn-primary::before {
+    content: "";
+    @apply absolute inset-0 bg-primary -translate-x-full transition-transform duration-300 ease-out -z-10;
+  }
+
+  .btn-primary:hover::before {
+    @apply translate-x-0;
+  }
+
+  .btn-filter {
+    @apply text-sm uppercase tracking-widest font-medium text-muted-foreground px-4 py-2 
+           border border-transparent transition-all duration-300 whitespace-nowrap
+           hover:text-primary hover:border-primary/30;
+  }
+
+  .btn-filter-active {
+    @apply text-primary border-primary;
   }
 
   .portfolio-card {
