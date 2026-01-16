@@ -6,29 +6,19 @@
  * - Full viewport height display
  * - Automatic rotation between portfolio images (5 second intervals)
  * - Slider navigation instead of dot indicators
- * - Interactive 3D parallax effect on hover
  * - Brand logo and title prominently displayed
  * - Smooth crossfade transitions between images
  * 
  * @component
  */
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import logoFull from "@/assets/logo-full.png";
 import { portfolioProjects } from "@/data/portfolio";
 
 const HeroCarousel = () => {
   // Track current active slide index
   const [currentIndex, setCurrentIndex] = useState(0);
-  
-  // Track hover state for 3D effect
-  const [isHovering, setIsHovering] = useState(false);
-  
-  // Track mouse position for parallax effect (0-100 percentage)
-  const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 });
-  
-  // Reference to carousel container for position calculations
-  const carouselRef = useRef<HTMLDivElement>(null);
   
   // Extract images from portfolio projects for carousel
   const images = portfolioProjects.map(p => p.image);
@@ -45,36 +35,6 @@ const HeroCarousel = () => {
     // Cleanup interval on unmount
     return () => clearInterval(interval);
   }, [images.length]);
-
-  /**
-   * Handle mouse movement for 3D parallax effect
-   * Calculates mouse position as percentage of container dimensions
-   */
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!carouselRef.current) return;
-    
-    const rect = carouselRef.current.getBoundingClientRect();
-    // Calculate position as percentage (0-100)
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    
-    setMousePosition({ x, y });
-  };
-
-  /**
-   * Handle mouse enter - activate parallax effect
-   */
-  const handleMouseEnter = () => {
-    setIsHovering(true);
-  };
-
-  /**
-   * Handle mouse leave - reset to center position
-   */
-  const handleMouseLeave = () => {
-    setIsHovering(false);
-    setMousePosition({ x: 50, y: 50 });
-  };
 
   /**
    * Navigate to previous slide
@@ -113,13 +73,7 @@ const HeroCarousel = () => {
       </div>
 
       {/* Carousel Images Container */}
-      <div 
-        ref={carouselRef}
-        className="relative flex-1 overflow-hidden cursor-pointer"
-        onMouseMove={handleMouseMove}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
+      <div className="relative flex-1 overflow-hidden">
         {/* Image slides with crossfade transition */}
         {images.map((image, index) => (
           <div
@@ -130,20 +84,12 @@ const HeroCarousel = () => {
                 : "opacity-0"
             }`}
           >
-            {/* 3D Parallax Image - subtle zoom on hover with position tracking */}
-            <div
-              className="w-full h-full transition-transform duration-300 ease-out"
-              style={{
-                transform: isHovering ? 'scale(1.15)' : 'scale(1)',
-                transformOrigin: `${mousePosition.x}% ${mousePosition.y}%`,
-              }}
-            >
-              <img
-                src={image}
-                alt={`Portfolio work ${index + 1}`}
-                className="w-full h-full object-cover"
-              />
-            </div>
+            {/* Static Image - no parallax */}
+            <img
+              src={image}
+              alt={`Portfolio work ${index + 1}`}
+              className="w-full h-full object-cover"
+            />
           </div>
         ))}
 
