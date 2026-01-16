@@ -10,24 +10,29 @@ interface GalleryImageProps {
 
 const GalleryImage = ({ src, alt, title, className = "" }: GalleryImageProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [parallaxStyle, setParallaxStyle] = useState({ x: 0, y: 0 });
+  const [isHovering, setIsHovering] = useState(false);
+  const [position, setPosition] = useState({ x: 50, y: 50 });
   const containerRef = useRef<HTMLDivElement>(null);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!containerRef.current) return;
     
     const rect = containerRef.current.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width - 0.5;
-    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    // Calculate mouse position as percentage (0-100)
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
     
-    setParallaxStyle({
-      x: x * 20,
-      y: y * 20,
-    });
+    setPosition({ x, y });
+  };
+
+  const handleMouseEnter = () => {
+    setIsHovering(true);
   };
 
   const handleMouseLeave = () => {
-    setParallaxStyle({ x: 0, y: 0 });
+    setIsHovering(false);
+    // Reset to center
+    setPosition({ x: 50, y: 50 });
   };
 
   const displayTitle = title || alt;
@@ -39,26 +44,28 @@ const GalleryImage = ({ src, alt, title, className = "" }: GalleryImageProps) =>
         className={`gallery-card group cursor-pointer relative overflow-hidden ${className}`}
         onClick={() => setIsOpen(true)}
         onMouseMove={handleMouseMove}
+        onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        {/* Parallax Image */}
+        {/* 3D Parallax "Look Around" Image */}
         <div 
-          className="w-full h-full transition-transform duration-300 ease-out"
+          className="w-full h-full transition-transform duration-200 ease-out"
           style={{
-            transform: `translate(${parallaxStyle.x}px, ${parallaxStyle.y}px) scale(1.1)`,
+            transform: isHovering ? 'scale(1.4)' : 'scale(1)',
+            transformOrigin: `${position.x}% ${position.y}%`,
           }}
         >
           <img
             src={src}
             alt={alt}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover transition-all duration-200"
             loading="lazy"
           />
         </div>
         
         {/* Hover Overlay with Title */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent 
-                        opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-end p-6">
+        <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/20 to-transparent 
+                        opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-end p-6 pointer-events-none">
           <div className="translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
             <h3 className="font-display text-xl md:text-2xl uppercase tracking-wide text-foreground">
               {displayTitle}
@@ -68,6 +75,13 @@ const GalleryImage = ({ src, alt, title, className = "" }: GalleryImageProps) =>
             </span>
           </div>
         </div>
+
+        {/* Subtle vignette effect */}
+        <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+             style={{
+               boxShadow: 'inset 0 0 60px 20px rgba(0,0,0,0.4)'
+             }}
+        />
       </div>
 
       {/* Lightbox */}
