@@ -3,7 +3,9 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import GalleryImage from "@/components/GalleryImage";
+import ScrollReveal from "@/components/ScrollReveal";
 import { portfolioProjects } from "@/data/portfolio";
+import logoIcon from "@/assets/logo-icon.png";
 
 const PortfolioDetail = () => {
   const { id } = useParams();
@@ -13,9 +15,9 @@ const PortfolioDetail = () => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <span className="logo-mark text-8xl mb-4">//</span>
+          <img src={logoIcon} alt="Aurelian Studios" className="h-20 w-auto mx-auto mb-4" />
           <h1 className="font-display text-4xl mb-4">Project Not Found</h1>
-          <Link to="/portfolio" className="nav-link">
+          <Link to="/portfolio" className="btn-primary">
             Return to Portfolio
           </Link>
         </div>
@@ -52,21 +54,24 @@ const PortfolioDetail = () => {
 
       {/* Description */}
       <section className="section-padding py-16 max-w-4xl">
-        <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed">
-          {project.description}
-        </p>
+        <ScrollReveal>
+          <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed">
+            {project.description}
+          </p>
+        </ScrollReveal>
       </section>
 
       {/* Project Images */}
       <section className="section-padding pb-16">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {project.images.map((image, index) => (
-            <GalleryImage
-              key={index}
-              src={image}
-              alt={`${project.title} - Image ${index + 1}`}
-              className="aspect-[4/3]"
-            />
+            <ScrollReveal key={index} delay={index * 100}>
+              <GalleryImage
+                src={image}
+                alt={`${project.title} - Image ${index + 1}`}
+                className="aspect-[4/3]"
+              />
+            </ScrollReveal>
           ))}
         </div>
       </section>
@@ -79,7 +84,7 @@ const PortfolioDetail = () => {
               to={`/portfolio/${prevProject.id}`}
               className="flex items-center gap-3 group"
             >
-              <ArrowLeft className="group-hover:-translate-x-2 transition-transform" />
+              <ArrowLeft className="group-hover:-translate-x-2 transition-transform text-primary" />
               <div>
                 <p className="text-muted-foreground text-sm">Previous</p>
                 <p className="font-display uppercase">{prevProject.title}</p>
@@ -98,7 +103,7 @@ const PortfolioDetail = () => {
                 <p className="text-muted-foreground text-sm">Next</p>
                 <p className="font-display uppercase">{nextProject.title}</p>
               </div>
-              <ArrowRight className="group-hover:translate-x-2 transition-transform" />
+              <ArrowRight className="group-hover:translate-x-2 transition-transform text-primary" />
             </Link>
           ) : (
             <div />
