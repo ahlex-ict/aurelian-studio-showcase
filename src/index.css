@@ -135,6 +135,10 @@
            transition-transform duration-500 ease-out;
   }
 
+  .gallery-card {
+    @apply relative overflow-hidden cursor-pointer;
+  }
+
   .logo-mark {
     @apply text-primary font-display font-bold text-2xl;
   }
@@ -145,6 +149,20 @@
 
   .image-zoom {
     @apply transition-transform duration-700 ease-out group-hover:scale-110;
+  }
+
+  /* Animated Titles */
+  .title-animated {
+    @apply relative overflow-hidden;
+  }
+
+  .title-animated::after {
+    content: "";
+    @apply absolute bottom-0 left-0 w-full h-0.5 bg-primary transform -translate-x-full transition-transform duration-500;
+  }
+
+  .title-animated:hover::after {
+    @apply translate-x-0;
   }
 }
 

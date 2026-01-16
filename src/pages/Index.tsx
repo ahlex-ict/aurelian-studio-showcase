@@ -18,12 +18,12 @@ const Index = () => {
 
       {/* About Section */}
       <section className="section-padding py-24 max-w-4xl mx-auto text-center">
-        <ScrollReveal>
-          <h2 className="text-primary font-display text-lg uppercase tracking-widest mb-6">
+        <ScrollReveal animation="pop">
+          <h2 className="text-primary font-display text-lg uppercase tracking-widest mb-6 title-animated inline-block">
             Who is Aurelian Studios?
           </h2>
         </ScrollReveal>
-        <ScrollReveal delay={100}>
+        <ScrollReveal delay={100} animation="slide-up">
           <p className="text-lg md:text-xl leading-relaxed text-muted-foreground">
             Aurelian Studios is a world-renowned automotive photography studio, 
             capturing the essence of automotive excellence across the globe. 
@@ -34,7 +34,7 @@ const Index = () => {
           </p>
         </ScrollReveal>
         
-        <ScrollReveal delay={200}>
+        <ScrollReveal delay={200} animation="scale">
           <Link
             to="/portfolio"
             className="inline-block mt-10 group"
@@ -57,18 +57,18 @@ const Index = () => {
 
       {/* Portfolio Grid */}
       <section className="section-padding pb-24">
-        <ScrollReveal>
+        <ScrollReveal animation="slide-up">
           <div className="flex items-center gap-4 mb-8 overflow-x-auto pb-4">
-            <button className="btn-filter btn-filter-active">All</button>
-            <button className="btn-filter">Featured</button>
-            <button className="btn-filter">Portfolio</button>
-            <button className="btn-filter">Commercial</button>
+            <Link to="/portfolio" className="btn-filter btn-filter-active">All</Link>
+            <Link to="/portfolio" className="btn-filter">Featured</Link>
+            <Link to="/portfolio" className="btn-filter">Portfolio</Link>
+            <Link to="/gallery" className="btn-filter">Gallery</Link>
           </div>
         </ScrollReveal>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {featuredProjects.map((project, index) => (
-            <ScrollReveal key={project.id} delay={index * 100}>
+            <ScrollReveal key={project.id} delay={index * 100} animation="pop">
               <PortfolioCard
                 id={project.id}
                 title={project.title}

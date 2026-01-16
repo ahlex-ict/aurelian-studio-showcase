@@ -1,28 +1,73 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { X, Download } from "lucide-react";
 
 interface GalleryImageProps {
   src: string;
   alt: string;
+  title?: string;
   className?: string;
 }
 
-const GalleryImage = ({ src, alt, className = "" }: GalleryImageProps) => {
+const GalleryImage = ({ src, alt, title, className = "" }: GalleryImageProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [parallaxStyle, setParallaxStyle] = useState({ x: 0, y: 0 });
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!containerRef.current) return;
+    
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    
+    setParallaxStyle({
+      x: x * 20,
+      y: y * 20,
+    });
+  };
+
+  const handleMouseLeave = () => {
+    setParallaxStyle({ x: 0, y: 0 });
+  };
+
+  const displayTitle = title || alt;
 
   return (
     <>
       <div
-        className={`portfolio-card group cursor-pointer ${className}`}
+        ref={containerRef}
+        className={`gallery-card group cursor-pointer relative overflow-hidden ${className}`}
         onClick={() => setIsOpen(true)}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
       >
-        <img
-          src={src}
-          alt={alt}
-          className="w-full h-full object-cover image-zoom"
-          loading="lazy"
-        />
-        <div className="portfolio-card-overlay" />
+        {/* Parallax Image */}
+        <div 
+          className="w-full h-full transition-transform duration-300 ease-out"
+          style={{
+            transform: `translate(${parallaxStyle.x}px, ${parallaxStyle.y}px) scale(1.1)`,
+          }}
+        >
+          <img
+            src={src}
+            alt={alt}
+            className="w-full h-full object-cover"
+            loading="lazy"
+          />
+        </div>
+        
+        {/* Hover Overlay with Title */}
+        <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent 
+                        opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-end p-6">
+          <div className="translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+            <h3 className="font-display text-xl md:text-2xl uppercase tracking-wide text-foreground">
+              {displayTitle}
+            </h3>
+            <span className="text-primary text-sm uppercase tracking-widest mt-1 block">
+              Click to view
+            </span>
+          </div>
+        </div>
       </div>
 
       {/* Lightbox */}
