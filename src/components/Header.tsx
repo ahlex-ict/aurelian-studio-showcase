@@ -1,10 +1,26 @@
+/**
+ * Header Component
+ * 
+ * Main navigation header with auto-hide behavior.
+ * - Disappears when scrolling down
+ * - Reappears when scrolling up or mouse near top
+ * - Responsive mobile menu with hamburger toggle
+ * 
+ * @component
+ */
+
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import Logo from "./Logo";
 import { useScrollHeader } from "@/hooks/useScrollHeader";
 
+/**
+ * Navigation links configuration
+ * Each link has a label (display text) and href (route path)
+ */
 const navLinks = [
+  { label: "Home", href: "/" },
   { label: "Portfolio", href: "/portfolio" },
   { label: "Gallery", href: "/gallery" },
   { label: "About", href: "/about" },
@@ -12,8 +28,13 @@ const navLinks = [
 ];
 
 const Header = () => {
+  // State for mobile menu toggle
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  
+  // Current route for active link styling
   const location = useLocation();
+  
+  // Custom hook for header visibility on scroll
   const isVisible = useScrollHeader();
 
   return (
@@ -22,12 +43,14 @@ const Header = () => {
         isVisible ? "translate-y-0" : "-translate-y-full"
       }`}
     >
+      {/* Gradient background overlay for better logo visibility */}
       <div className="absolute inset-0 bg-gradient-to-b from-background/80 to-transparent pointer-events-none" />
       
       <nav className="relative flex items-center justify-between">
+        {/* Logo - links to home page */}
         <Logo />
 
-        {/* Desktop Navigation */}
+        {/* Desktop Navigation - hidden on mobile */}
         <ul className="hidden md:flex items-center gap-10">
           {navLinks.map((link) => (
             <li key={link.href}>
@@ -43,7 +66,7 @@ const Header = () => {
           ))}
         </ul>
 
-        {/* Mobile Menu Button */}
+        {/* Mobile Menu Toggle Button */}
         <button
           className="md:hidden p-2 text-foreground"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -53,7 +76,7 @@ const Header = () => {
         </button>
       </nav>
 
-      {/* Mobile Navigation */}
+      {/* Mobile Navigation Overlay */}
       {isMenuOpen && (
         <div className="fixed inset-0 top-20 bg-background z-40 md:hidden animate-fade-in">
           <ul className="flex flex-col items-center justify-center h-full gap-8">
