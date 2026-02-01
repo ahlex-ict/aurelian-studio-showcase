@@ -18,7 +18,7 @@ const PortfolioDetail = () => {
           <img src={logoIcon} alt="Aurelian Studios" className="h-20 w-auto mx-auto mb-4" />
           <h1 className="font-display text-4xl mb-4">Project Not Found</h1>
           <Link to="/portfolio" className="btn-primary">
-            Return to Portfolio
+            Return to Clients
           </Link>
         </div>
       </div>

@@ -88,11 +88,28 @@
   }
 
   .nav-link {
-    @apply text-sm uppercase tracking-widest font-medium text-foreground/80 hover:text-primary transition-colors duration-300;
+    @apply text-sm uppercase tracking-widest font-medium text-foreground/80 px-6 py-3
+           transition-all duration-300 whitespace-nowrap
+           relative
+           hover:text-primary;
+  }
+
+  .nav-link::after {
+    content: "";
+    @apply absolute bottom-0 left-0 w-full h-0.5 bg-primary scale-x-0 origin-left transition-transform duration-300;
+  }
+
+  .nav-link:hover::after,
+  .nav-link:focus-visible::after {
+    @apply scale-x-100;
   }
 
   .nav-link-active {
     @apply text-primary;
+  }
+
+  .nav-link-active::after {
+    @apply scale-x-100;
   }
 
   /* Interactive Button Styles */
@@ -111,14 +128,37 @@
     @apply translate-x-0;
   }
 
+  .btn-primary::after {
+    content: "";
+    @apply absolute bottom-0 left-0 w-full h-0.5 bg-primary scale-x-0 origin-left transition-transform duration-300;
+  }
+
+  .btn-primary:hover::after {
+    @apply scale-x-100;
+  }
+
   .btn-filter {
-    @apply text-sm uppercase tracking-widest font-medium text-muted-foreground px-4 py-2 
-           border border-transparent transition-all duration-300 whitespace-nowrap
-           hover:text-primary hover:border-primary/30;
+    @apply text-sm uppercase tracking-widest font-medium text-muted-foreground px-6 py-3 
+           transition-all duration-300 whitespace-nowrap
+           relative
+           hover:text-primary;
+  }
+
+  .btn-filter::after {
+    content: "";
+    @apply absolute bottom-0 left-0 w-full h-0.5 bg-primary scale-x-0 origin-left transition-transform duration-300;
+  }
+
+  .btn-filter:hover::after {
+    @apply scale-x-100;
   }
 
   .btn-filter-active {
-    @apply text-primary border-primary;
+    @apply text-primary;
+  }
+
+  .btn-filter-active::after {
+    @apply scale-x-100;
   }
 
   .portfolio-card {
@@ -141,6 +181,54 @@
 
   .logo-mark {
     @apply text-primary font-display font-bold text-2xl;
+  }
+
+  /* Gold underline for headings only (appear on reveal) */
+  h1, h2, h3, h4, h5, h6 {
+    @apply relative inline-block;
+  }
+
+  h1::after, h2::after, h3::after, h4::after, h5::after, h6::after {
+    content: "";
+    @apply absolute bottom-0 left-0 w-full h-0.5 bg-primary scale-x-0 origin-left transition-transform duration-500;
+  }
+
+  /* Show underline when element becomes visible (ScrollReveal sets opacity-100) */
+  .opacity-100 h1::after, .opacity-100 h2::after, .opacity-100 h3::after, .opacity-100 h4::after, .opacity-100 h5::after, .opacity-100 h6::after {
+    @apply scale-x-100;
+  }
+
+  /* h2 specific: white text with gold question mark suffix */
+  h2 {
+    color: hsl(var(--foreground));
+  }
+  /* h2: keep white and remove special question-mark/underline treatment */
+  /* Disable the gold question-mark and any heading underline for h2 specifically */
+  h2::before {
+    display: none;
+  }
+
+  h2::after {
+    display: none !important;
+  }
+
+  .opacity-100 h2::after {
+    display: none !important;
+  }
+
+  /* Remove focus outlines for nav links */
+  .nav-link {
+    outline: none;
+  }
+
+  .nav-link:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
+  /* Active nav link keeps color only (no persistent underline) */
+  .nav-link-active {
+    @apply text-primary;
   }
 
   .section-padding {

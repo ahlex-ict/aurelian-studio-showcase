@@ -12,7 +12,7 @@ const Gallery = () => {
 
       {/* Title Section */}
       <section className="pt-32 pb-12 section-padding">
-        <ScrollReveal animation="slide-up">
+        <ScrollReveal animation="pop">
           <div className="flex items-center gap-4">
             <img src={logoIcon} alt="Aurelian Studios" className="h-16 w-auto" />
             <h1 className="font-display text-5xl md:text-7xl font-bold uppercase title-animated">

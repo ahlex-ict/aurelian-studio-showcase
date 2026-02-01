@@ -1,9 +1,16 @@
-import portfolio1 from "@/assets/portfolio-1.jpg";
-import portfolio2 from "@/assets/portfolio-2.jpg";
-import portfolio3 from "@/assets/portfolio-3.jpg";
-import portfolio4 from "@/assets/portfolio-4.jpg";
-import portfolio5 from "@/assets/portfolio-5.jpg";
-import portfolio6 from "@/assets/portfolio-6.jpg";
+/**
+ * Dynamic portfolio/gallery loader
+ *
+ * This file now auto-discovers image files under `src/assets` using Vite's
+ * `import.meta.globEager`. To add new shoots or galleries:
+ *
+ * 1) Create a folder under `src/assets`, e.g. `src/assets/2026-shoot-rome/`
+ * 2) Copy your high-resolution images into that folder (jpg, png, webp, avif)
+ * 3) Refresh the dev server — images are auto-included.
+ *
+ * You can optionally add a simple index image by prefixing a file with `01-`
+ * to control which image is used as the project's primary thumbnail.
+ */
 
 export interface PortfolioProject {
   id: string;
@@ -14,62 +21,76 @@ export interface PortfolioProject {
   images: string[];
 }
 
-export const portfolioProjects: PortfolioProject[] = [
-  {
-    id: "aurora-nights",
-    title: "Aurora Nights",
-    category: "Editorial",
-    description: "Capturing the ethereal beauty of hypercars beneath the dancing northern lights. A journey to the Arctic Circle resulted in this stunning series.",
-    image: portfolio1,
-    images: [portfolio1, portfolio4],
-  },
-  {
-    id: "neon-dreams",
-    title: "Neon Dreams",
-    category: "Commercial",
-    description: "Retro-futuristic automotive photography blending classic Americana with modern automotive design. Shot at iconic roadside locations.",
-    image: portfolio2,
-    images: [portfolio2],
-  },
-  {
-    id: "velocity",
-    title: "Velocity",
-    category: "Action",
-    description: "High-speed motion photography capturing the raw power and dynamic movement of sports cars through scenic forest roads.",
-    image: portfolio3,
-    images: [portfolio3, portfolio6],
-  },
-  {
-    id: "shadows",
-    title: "Shadows",
-    category: "Studio",
-    description: "Moody studio photography emphasizing the sculptural beauty of automotive design through dramatic lighting and atmospheric effects.",
-    image: portfolio4,
-    images: [portfolio4, portfolio1],
-  },
-  {
-    id: "italian-dreams",
-    title: "Italian Dreams",
-    category: "Travel",
-    description: "A photographic journey through the Italian Dolomites, showcasing supercars against breathtaking mountain village backdrops.",
-    image: portfolio5,
-    images: [portfolio5, portfolio6],
-  },
-  {
-    id: "coastal-drive",
-    title: "Coastal Drive",
-    category: "Aerial",
-    description: "Dramatic aerial perspectives capturing sports cars navigating stunning coastal roads. Shot from helicopters and drones.",
-    image: portfolio6,
-    images: [portfolio6, portfolio3],
-  },
-];
+// Use Vite glob to eagerly import all images under src/assets (recursively)
+// Using `{ as: 'url' }` returns the URL string for each matched file.
+let imagesByFolder = new Map<string, { src: string; alt: string; path: string }[]>();
 
-export const galleryImages = [
-  { src: portfolio1, alt: "Hypercar under aurora borealis" },
-  { src: portfolio2, alt: "Sports car at neon diner" },
-  { src: portfolio3, alt: "Motion blur forest drive" },
-  { src: portfolio4, alt: "Studio shot with smoke" },
-  { src: portfolio5, alt: "Red supercar in Dolomites" },
-  { src: portfolio6, alt: "Aerial coastal road shot" },
-];
+try {
+  // Use Vite glob to eagerly import all images under src/assets (recursively)
+  // Using `{ as: 'url' }` returns the URL string for each matched file.
+  const modules = import.meta.globEager('/src/assets/**', { as: 'url' }) as Record<string, string>;
+
+  // Collect only image files and group by their immediate parent folder
+  const imageExtensions = /\.(jpe?g|png|webp|avif|gif)$/i;
+
+  type Img = { src: string; alt: string; path: string };
+
+  imagesByFolder = new Map<string, Img[]>();
+
+  Object.keys(modules).forEach((p) => {
+    try {
+      if (!imageExtensions.test(p)) return;
+
+      const parts = p.split('/');
+      const fileName = parts.pop() || '';
+      const folder = parts.pop() || 'root';
+      const maybe = (modules as any)[p];
+      const src = typeof maybe === 'string' ? (maybe as string) : (maybe?.default as string) || '';
+
+      if (!src) return;
+
+      const entry: Img = { src, alt: fileName, path: p };
+
+      if (!imagesByFolder.has(folder)) imagesByFolder.set(folder, []);
+      imagesByFolder.get(folder)!.push(entry);
+    } catch (e) {
+      // ignore file-level issues
+    }
+  });
+} catch (err) {
+  // If import.meta.globEager fails in the environment, log and continue with empty gallery
+  // eslint-disable-next-line no-console
+  console.error('Portfolio asset glob failed:', err);
+  imagesByFolder = new Map();
+}
+
+// Sort images in each folder by filename so numeric prefixes control ordering
+imagesByFolder.forEach((arr) => arr.sort((a, b) => a.path.localeCompare(b.path)));
+
+const humanize = (s: string) =>
+  s
+    .replace(/[-_]/g, ' ')
+    .replace(/\b\w/g, (m) => m.toUpperCase());
+
+// Build portfolioProjects from folders. Folders named 'root' will be flattened into a generic gallery.
+export const portfolioProjects: PortfolioProject[] = Array.from(imagesByFolder.entries())
+  .filter(([folder, imgs]) => imgs.length > 0)
+  .map(([folder, imgs]) => ({
+    id: folder,
+    title: humanize(folder),
+    category: 'Clients',
+    description: '',
+    image: imgs[0].src,
+    images: imgs.map((i) => i.src),
+  }));
+
+// Flat gallery images for pages that expect a simple array
+export const galleryImages = Array.from(imagesByFolder.values()).flat().map((i) => ({ src: i.src, alt: i.alt }));
+
+/**
+ * Notes for maintainers:
+ * - To add a new shoot, create `src/assets/<shoot-name>/` and drop full-res images there.
+ * - Images are included automatically; use numeric prefixes (01-, 02-) to control order.
+ * - If you want a custom title/description, replace this file with a small JSON
+ *   metadata mapping or add a simple YAML/JSON sidecar file per folder and extend this loader.
+ */

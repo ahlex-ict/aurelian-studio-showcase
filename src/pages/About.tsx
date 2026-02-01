@@ -58,7 +58,6 @@ const About = () => {
                   alt="Studio photography"
                   className="w-full aspect-[4/5] object-cover"
                 />
-                <div className="absolute -bottom-4 -left-4 w-24 h-24 border-2 border-primary" />
               </div>
             </ScrollReveal>
           </div>

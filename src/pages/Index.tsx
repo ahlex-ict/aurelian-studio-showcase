@@ -16,6 +16,7 @@ import Footer from "@/components/Footer";
 import PortfolioCard from "@/components/PortfolioCard";
 import HeroCarousel from "@/components/HeroCarousel";
 import ScrollReveal from "@/components/ScrollReveal";
+import logoFull from "@/assets/logo-full.png";
 import { portfolioProjects } from "@/data/portfolio";
 
 const Index = () => {
@@ -30,58 +31,33 @@ const Index = () => {
       {/* Full-page Hero Carousel Section */}
       <HeroCarousel />
 
-      {/* About Section - Studio introduction */}
-      <section className="section-padding py-24 max-w-4xl mx-auto text-center">
-        {/* Section Title with pop animation */}
-        <ScrollReveal animation="pop">
-          <h2 className="text-primary font-display text-lg uppercase tracking-widest mb-6 title-animated inline-block">
-            Who is Aurelian Studios?
-          </h2>
-        </ScrollReveal>
-        
-        {/* Studio Description with slide-up animation */}
-        <ScrollReveal delay={100} animation="slide-up">
-          <p className="text-lg md:text-xl leading-relaxed text-muted-foreground">
-            Aurelian Studios is a world-renowned automotive photography studio, 
-            capturing the essence of automotive excellence across the globe. 
-            Our unique and technical style has earned widespread acclaim, 
-            with our work being featured in major publications worldwide. 
-            A true passion for cars is evident in every shot we take, 
-            resulting in images that are distinguishable, captivating, and dynamic.
+      {/* Intro Section — Large centered logo + subheading (replaces About) */}
+      <section className="section-padding py-24 max-w-5xl mx-auto text-center">
+        <div className="flex flex-col items-center justify-center gap-6">
+          <img src={logoFull} alt="Aurelian Studios" className="h-36 md:h-48 lg:h-64 w-auto" />
+          <p className="text-lg md:text-xl leading-relaxed text-muted-foreground max-w-2xl">
+            Photography & Creative Direction for automotive brands and clients worldwide.
           </p>
-        </ScrollReveal>
-        
-        {/* Portfolio Preview Image Link */}
-        <ScrollReveal delay={200} animation="scale">
-          <Link
-            to="/portfolio"
-            className="inline-block mt-10 group"
-          >
-            <div className="relative overflow-hidden rounded-sm">
-              <img
-                src={featuredProjects[0].image}
-                alt="View the portfolio"
-                className="w-80 h-48 object-cover image-zoom"
-              />
-              {/* Gradient overlay with text */}
-              <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent flex items-end justify-center pb-6">
-                <span className="font-display text-lg uppercase tracking-widest">
-                  View The Portfolio
-                </span>
-              </div>
-            </div>
-          </Link>
-        </ScrollReveal>
+
+          <div>
+            <button
+              onClick={() => document.getElementById("gallery")?.scrollIntoView({ behavior: "smooth" })}
+              className="btn-primary mt-6"
+            >
+              View Gallery
+            </button>
+          </div>
+        </div>
       </section>
 
       {/* Portfolio Grid Section */}
-      <section className="section-padding pb-24">
+      <section id="gallery" className="section-padding pb-24">
         {/* Category Filter Buttons */}
-        <ScrollReveal animation="slide-up">
+        <ScrollReveal animation="pop">
           <div className="flex items-center gap-4 mb-8 overflow-x-auto pb-4">
             <Link to="/portfolio" className="btn-filter btn-filter-active">All</Link>
             <Link to="/portfolio" className="btn-filter">Featured</Link>
-            <Link to="/portfolio" className="btn-filter">Portfolio</Link>
+            <Link to="/portfolio" className="btn-filter">Clients</Link>
             <Link to="/gallery" className="btn-filter">Gallery</Link>
           </div>
         </ScrollReveal>

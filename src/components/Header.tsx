@@ -21,7 +21,7 @@ import { useScrollHeader } from "@/hooks/useScrollHeader";
  */
 const navLinks = [
   { label: "Home", href: "/" },
-  { label: "Portfolio", href: "/portfolio" },
+  { label: "Clients", href: "/portfolio" },
   { label: "Gallery", href: "/gallery" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },

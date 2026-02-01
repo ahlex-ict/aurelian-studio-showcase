@@ -15,7 +15,7 @@ const Portfolio = () => {
         <div className="absolute inset-0">
           <img
             src={portfolioBanner}
-            alt="Portfolio banner"
+            alt="Clients banner"
             className="w-full h-full object-cover object-center"
           />
           <div className="absolute inset-0 bg-background/60" />
@@ -25,10 +25,14 @@ const Portfolio = () => {
       {/* Portfolio Grid */}
       <section className="section-padding py-12">
         <ScrollReveal>
+          <h2 className="font-display text-4xl md:text-5xl font-bold uppercase mb-8">Clients</h2>
+        </ScrollReveal>
+
+        <ScrollReveal>
           <div className="flex items-center gap-4 mb-8 overflow-x-auto pb-4">
             <button className="btn-filter btn-filter-active">All</button>
             <button className="btn-filter">Featured</button>
-            <button className="btn-filter">Portfolio</button>
+            <button className="btn-filter">Clients</button>
             <button className="btn-filter">Commercial</button>
           </div>
         </ScrollReveal>
