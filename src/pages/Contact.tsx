@@ -5,7 +5,7 @@ import ScrollReveal from "@/components/ScrollReveal";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Instagram, Twitter, Mail, MapPin } from "lucide-react";
+import { Instagram, Twitter, Facebook, Mail, MapPin } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 
 const Contact = () => {
@@ -19,10 +19,19 @@ const Contact = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const { name, email, subject, message } = formData;
+    const body = `Name: ${name}\nEmail: ${email}\n\n${message}`;
+    const mailto = `mailto:contact.aurelianstudios@gmail.com?subject=${encodeURIComponent(
+      subject || "Contact from website",
+    )}&body=${encodeURIComponent(body)}`;
+    // Open user's email client with prefilled message
+    window.location.href = mailto;
+
     toast({
-      title: "Message sent!",
-      description: "We'll get back to you as soon as possible.",
+      title: "Email client opened",
+      description: "Your email client should open to send the message.",
     });
+
     setFormData({ name: "", email: "", subject: "", message: "" });
   };
 
@@ -134,7 +143,6 @@ const Contact = () => {
                 </h3>
                 <p className="text-muted-foreground">
                   We're always excited to hear about new projects and collaborations. 
-                  Whether you're a car manufacturer, magazine, or private collector, 
                   we'd love to discuss how we can help capture your vision.
                 </p>
               </div>
@@ -144,11 +152,11 @@ const Contact = () => {
               <div className="space-y-4">
                 <div className="flex items-center gap-4">
                   <Mail className="text-primary" size={24} />
-                  <span>hello@aurelianstudios.com</span>
+                  <span>contact.aurelianstudios@gmail.com</span>
                 </div>
                 <div className="flex items-center gap-4">
                   <MapPin className="text-primary" size={24} />
-                  <span>London, United Kingdom</span>
+                  <span>Brisbane, Queensland, Australia</span>
                 </div>
               </div>
             </ScrollReveal>
@@ -158,10 +166,16 @@ const Contact = () => {
                 <h3 className="font-display text-xl uppercase mb-4">Follow Us</h3>
                 <div className="flex gap-6">
                   <a
-                    href="#"
+                    href="https://www.instagram.com/aurelianstudios.co?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
                     className="text-muted-foreground hover:text-primary transition-colors"
                   >
                     <Instagram size={28} />
+                  </a>
+                  <a
+                    href="#"
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    <Facebook size={28} />
                   </a>
                   <a
                     href="#"

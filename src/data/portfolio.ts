@@ -1,16 +1,44 @@
 /**
- * Dynamic portfolio/gallery loader
+ * Portfolio & Gallery Configuration
  *
- * This file now auto-discovers image files under `src/assets` using Vite's
- * `import.meta.globEager`. To add new shoots or galleries:
+ * EASY SETUP: Add folders to `src/assets`, then import them below and define which
+ * images display where.
  *
+ * HOW TO ADD NEW SHOOTS:
  * 1) Create a folder under `src/assets`, e.g. `src/assets/2026-shoot-rome/`
- * 2) Copy your high-resolution images into that folder (jpg, png, webp, avif)
- * 3) Refresh the dev server — images are auto-included.
+ * 2) Drag your high-res images into that folder
+ * 3) Import the folder below (example at bottom)
+ * 4) Add new entries to portfolioProjects or galleryImages as needed
+ * 5) Refresh the dev server
  *
- * You can optionally add a simple index image by prefixing a file with `01-`
- * to control which image is used as the project's primary thumbnail.
+ * FOLDER IMPORT EXAMPLE:
+ * const myShootImages = import.meta.glob('/src/assets/my-shoot/*.{jpg,png,webp}', { eager: true });
  */
+
+// ============================================================================
+// IMPORT YOUR ASSET FOLDERS HERE (add glob imports for new shoots)
+// ============================================================================
+
+const brisbaneImages = import.meta.glob('/src/assets/Brisbane/*.{jpg,png,webp}', { eager: true });
+const mustangImages = import.meta.glob('/src/assets/Mustang/*.{jpg,png,webp}', { eager: true });
+const gympieImages = import.meta.glob('/src/assets/Gympie Medical Transport/*.{jpg,png,webp}', { eager: true });
+
+// Helper: extract image URLs from glob results
+const extractUrls = (globResult: Record<string, any>): string[] => {
+  try {
+    return Object.values(globResult)
+      .map((m) => (typeof m === 'string' ? m : m?.default || ''))
+      .filter(Boolean)
+      .sort(); // alphabetical order for consistency
+  } catch (e) {
+    // If glob fails, return empty array (graceful degradation)
+    return [];
+  }
+};
+
+// ============================================================================
+// INTERFACE & PORTFOLIO PROJECTS (customize title, description, category, order)
+// ============================================================================
 
 export interface PortfolioProject {
   id: string;
@@ -21,76 +49,49 @@ export interface PortfolioProject {
   images: string[];
 }
 
-// Use Vite glob to eagerly import all images under src/assets (recursively)
-// Using `{ as: 'url' }` returns the URL string for each matched file.
-let imagesByFolder = new Map<string, { src: string; alt: string; path: string }[]>();
-
-try {
-  // Use Vite glob to eagerly import all images under src/assets (recursively)
-  // Using `{ as: 'url' }` returns the URL string for each matched file.
-  const modules = import.meta.globEager('/src/assets/**', { as: 'url' }) as Record<string, string>;
-
-  // Collect only image files and group by their immediate parent folder
-  const imageExtensions = /\.(jpe?g|png|webp|avif|gif)$/i;
-
-  type Img = { src: string; alt: string; path: string };
-
-  imagesByFolder = new Map<string, Img[]>();
-
-  Object.keys(modules).forEach((p) => {
-    try {
-      if (!imageExtensions.test(p)) return;
-
-      const parts = p.split('/');
-      const fileName = parts.pop() || '';
-      const folder = parts.pop() || 'root';
-      const maybe = (modules as any)[p];
-      const src = typeof maybe === 'string' ? (maybe as string) : (maybe?.default as string) || '';
-
-      if (!src) return;
-
-      const entry: Img = { src, alt: fileName, path: p };
-
-      if (!imagesByFolder.has(folder)) imagesByFolder.set(folder, []);
-      imagesByFolder.get(folder)!.push(entry);
-    } catch (e) {
-      // ignore file-level issues
-    }
-  });
-} catch (err) {
-  // If import.meta.globEager fails in the environment, log and continue with empty gallery
-  // eslint-disable-next-line no-console
-  console.error('Portfolio asset glob failed:', err);
-  imagesByFolder = new Map();
-}
-
-// Sort images in each folder by filename so numeric prefixes control ordering
-imagesByFolder.forEach((arr) => arr.sort((a, b) => a.path.localeCompare(b.path)));
-
-const humanize = (s: string) =>
-  s
-    .replace(/[-_]/g, ' ')
-    .replace(/\b\w/g, (m) => m.toUpperCase());
-
-// Build portfolioProjects from folders. Folders named 'root' will be flattened into a generic gallery.
-export const portfolioProjects: PortfolioProject[] = Array.from(imagesByFolder.entries())
-  .filter(([folder, imgs]) => imgs.length > 0)
-  .map(([folder, imgs]) => ({
-    id: folder,
-    title: humanize(folder),
+export const portfolioProjects: PortfolioProject[] = [
+  {
+    id: 'brisbane',
+    title: 'Brisbane',
     category: 'Clients',
-    description: '',
-    image: imgs[0].src,
-    images: imgs.map((i) => i.src),
-  }));
+    description: 'Photography from Brisbane city',
+    image: extractUrls(brisbaneImages)[0] || '',
+    images: extractUrls(brisbaneImages).length > 0 ? extractUrls(brisbaneImages) : [],
+  },
+  {
+    id: 'mustang',
+    title: 'Mustang',
+    category: 'Clients',
+    description: 'Premium Mustang photography series',
+    image: extractUrls(mustangImages)[0] || '',
+    images: extractUrls(mustangImages).length > 0 ? extractUrls(mustangImages) : [],
+  },
+  {
+    id: 'gympie',
+    title: 'Gympie Medical Transport',
+    category: 'Clients',
+    description: 'Commercial vehicle photography',
+    image: extractUrls(gympieImages)[0] || '',
+    images: extractUrls(gympieImages).length > 0 ? extractUrls(gympieImages) : [],
+  },
+].filter((project) => project.images.length > 0); // Only include projects with images
 
-// Flat gallery images for pages that expect a simple array
-export const galleryImages = Array.from(imagesByFolder.values()).flat().map((i) => ({ src: i.src, alt: i.alt }));
+// ============================================================================
+// GALLERY IMAGES (used on the gallery page)
+// ============================================================================
+
+export const galleryImages = [
+  ...extractUrls(brisbaneImages),
+  ...extractUrls(mustangImages),
+  ...extractUrls(gympieImages),
+].map((src) => ({ src, alt: 'Automotive photography' }));
 
 /**
- * Notes for maintainers:
- * - To add a new shoot, create `src/assets/<shoot-name>/` and drop full-res images there.
- * - Images are included automatically; use numeric prefixes (01-, 02-) to control order.
- * - If you want a custom title/description, replace this file with a small JSON
- *   metadata mapping or add a simple YAML/JSON sidecar file per folder and extend this loader.
+ * TO ADD A NEW SHOOT:
+ * 1) Create folder: src/assets/my-new-shoot/
+ * 2) Add images (jpg, png, webp)
+ * 3) Import at the top: const myShootImages = import.meta.glob('/src/assets/my-new-shoot/*.{jpg,png,webp}', { eager: true });
+ * 4) Add entry to portfolioProjects[] array above
+ * 5) Optionally add to galleryImages if you want it visible on the gallery page
+ * 6) Refresh dev server
  */

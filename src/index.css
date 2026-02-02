@@ -183,19 +183,9 @@
     @apply text-primary font-display font-bold text-2xl;
   }
 
-  /* Gold underline for headings only (appear on reveal) */
+  /* Headings: no underlines (removed) */
   h1, h2, h3, h4, h5, h6 {
     @apply relative inline-block;
-  }
-
-  h1::after, h2::after, h3::after, h4::after, h5::after, h6::after {
-    content: "";
-    @apply absolute bottom-0 left-0 w-full h-0.5 bg-primary scale-x-0 origin-left transition-transform duration-500;
-  }
-
-  /* Show underline when element becomes visible (ScrollReveal sets opacity-100) */
-  .opacity-100 h1::after, .opacity-100 h2::after, .opacity-100 h3::after, .opacity-100 h4::after, .opacity-100 h5::after, .opacity-100 h6::after {
-    @apply scale-x-100;
   }
 
   /* h2 specific: white text with gold question mark suffix */

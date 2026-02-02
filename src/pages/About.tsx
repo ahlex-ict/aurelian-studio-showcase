@@ -1,10 +1,19 @@
+import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
-import portfolioImage from "@/assets/portfolio-4.jpg";
+import { portfolioProjects } from "@/data/portfolio";
 import logoIcon from "@/assets/logo-icon.png";
 
 const About = () => {
+  const [featuredImage, setFeaturedImage] = useState("");
+
+  useEffect(() => {
+    // Use the first available portfolio image, or fallback to empty
+    const firstImage = portfolioProjects[0]?.image || "";
+    setFeaturedImage(firstImage);
+  }, []);
+
   return (
     <div className="min-h-screen">
       <Header />
@@ -30,34 +39,38 @@ const About = () => {
               </ScrollReveal>
               <ScrollReveal delay={200}>
                 <p className="text-muted-foreground text-lg leading-relaxed">
-                  Aurelian Studios is a premier automotive photography studio based 
-                  in London, but often found traveling the world shooting cars. 
-                  We have won widespread acclaim for our unique and technical style 
-                  of automotive images.
+                  Aurelian Studios is a premier digital marketing studio based 
+                  in Brisbane
                 </p>
               </ScrollReveal>
               <ScrollReveal delay={300}>
                 <p className="text-muted-foreground text-lg leading-relaxed">
-                  Our passion for cars is clear in every shot we take, and with 
-                  nearly two decades of experience, the resulting images are 
+                  Our passion is clear in every shot we take, resulting in images that are 
                   distinguishable, captivating, and dynamic.
                 </p>
               </ScrollReveal>
               <ScrollReveal delay={400}>
                 <p className="text-muted-foreground text-lg leading-relaxed">
                   From studio shoots to exotic locations, from action shots to 
-                  atmospheric portraits, we bring a cinematic vision to every project.
+                  atmospheric portraits, we bring a cinematic vision to every project putting
+                  your vision at the forefront.
                 </p>
               </ScrollReveal>
             </div>
 
             <ScrollReveal delay={200}>
               <div className="relative">
-                <img
-                  src={portfolioImage}
-                  alt="Studio photography"
-                  className="w-full aspect-[4/5] object-cover"
-                />
+                {featuredImage ? (
+                  <img
+                    src={featuredImage}
+                    alt="Studio photography"
+                    className="w-full aspect-[4/5] object-cover"
+                  />
+                ) : (
+                  <div className="w-full aspect-[4/5] bg-muted flex items-center justify-center">
+                    <p className="text-muted-foreground">No images available</p>
+                  </div>
+                )}
               </div>
             </ScrollReveal>
           </div>

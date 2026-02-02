@@ -10,75 +10,85 @@
  * @page
  */
 
-import { Link } from "react-router-dom";
+import { useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import PortfolioCard from "@/components/PortfolioCard";
-import HeroCarousel from "@/components/HeroCarousel";
+import GalleryImage from "@/components/GalleryImage";
 import ScrollReveal from "@/components/ScrollReveal";
 import logoFull from "@/assets/logo-full.png";
 import { portfolioProjects } from "@/data/portfolio";
 
 const Index = () => {
-  // Get first 6 projects for featured display
-  const featuredProjects = portfolioProjects.slice(0, 6);
+  // Display all portfolio projects
+  const featuredProjects = portfolioProjects;
+  const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
 
   return (
     <div className="min-h-screen">
       {/* Site Header with auto-hide behavior */}
       <Header />
 
-      {/* Full-page Hero Carousel Section */}
-      <HeroCarousel />
-
-      {/* Intro Section — Large centered logo + subheading (replaces About) */}
-      <section className="section-padding py-24 max-w-5xl mx-auto text-center">
-        <div className="flex flex-col items-center justify-center gap-6">
-          <img src={logoFull} alt="Aurelian Studios" className="h-36 md:h-48 lg:h-64 w-auto" />
-          <p className="text-lg md:text-xl leading-relaxed text-muted-foreground max-w-2xl">
-            Photography & Creative Direction for automotive brands and clients worldwide.
-          </p>
-
-          <div>
-            <button
-              onClick={() => document.getElementById("gallery")?.scrollIntoView({ behavior: "smooth" })}
-              className="btn-primary mt-6"
-            >
-              View Gallery
-            </button>
-          </div>
+      {/* Simple Black Landing Section */}
+      <section className="w-full bg-black py-20 md:py-32">
+        <div className="max-w-5xl mx-auto px-4 flex flex-col items-center justify-center">
+          <img src={logoFull} alt="Aurelian Studios" className="h-32 md:h-48 lg:h-64 w-auto" />
         </div>
       </section>
 
-      {/* Portfolio Grid Section */}
+      {/* Full Gallery Section */}
       <section id="gallery" className="section-padding pb-24">
-        {/* Category Filter Buttons */}
-        <ScrollReveal animation="pop">
-          <div className="flex items-center gap-4 mb-8 overflow-x-auto pb-4">
-            <Link to="/portfolio" className="btn-filter btn-filter-active">All</Link>
-            <Link to="/portfolio" className="btn-filter">Featured</Link>
-            <Link to="/portfolio" className="btn-filter">Clients</Link>
-            <Link to="/gallery" className="btn-filter">Gallery</Link>
-          </div>
-        </ScrollReveal>
-
-        {/* Responsive Grid of Portfolio Cards */}
+        {/* Flatten all images from all projects into single grid with folder info */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {featuredProjects.map((project, index) => (
-            <ScrollReveal key={project.id} delay={index * 100} animation="pop">
-              <PortfolioCard
-                id={project.id}
-                title={project.title}
-                image={project.image}
-                // Second item spans 2 rows on medium+ screens
-                className={
-                  index === 1 ? "md:row-span-2 md:aspect-auto" : ""
-                }
-              />
-            </ScrollReveal>
-          ))}
+          {featuredProjects.flatMap((project) =>
+            project.images.map((image, imgIndex) => (
+              <ScrollReveal key={`${project.id}-${imgIndex}`} delay={imgIndex * 50} animation="pop">
+                <div
+                  onClick={() => setFullscreenImage(image)}
+                  className="cursor-pointer relative aspect-square overflow-hidden rounded-sm group"
+                >
+                  <GalleryImage
+                    src={image}
+                    alt={project.title}
+                    title={project.title}
+                    className="aspect-square group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
+                    <div className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </ScrollReveal>
+            ))
+          )}
         </div>
       </section>
+
+      {/* Fullscreen Modal */}
+      {fullscreenImage && (
+        <div
+          className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4"
+          onClick={() => setFullscreenImage(null)}
+        >
+          <button
+            onClick={() => setFullscreenImage(null)}
+            className="absolute top-8 right-8 text-white hover:text-primary transition-colors z-51"
+            aria-label="Close fullscreen"
+          >
+            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          <img
+            src={fullscreenImage}
+            alt="Fullscreen view"
+            className="max-h-[90vh] max-w-[90vw] object-contain"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
 
       {/* Site Footer */}
       <Footer />
