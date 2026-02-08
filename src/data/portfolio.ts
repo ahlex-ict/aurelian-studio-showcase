@@ -24,10 +24,11 @@ const mustangImages = import.meta.glob('/src/assets/Mustang/*.{jpg,png,webp}', {
 const gympieImages = import.meta.glob('/src/assets/Gympie Medical Transport/*.{jpg,png,webp}', { eager: true });
 
 // Helper: extract image URLs from glob results
-const extractUrls = (globResult: Record<string, any>): string[] => {
+type GlobResult = Record<string, { default?: string } | string>;
+const extractUrls = (globResult: GlobResult): string[] => {
   try {
     return Object.values(globResult)
-      .map((m) => (typeof m === 'string' ? m : m?.default || ''))
+      .map((m) => (typeof m === 'string' ? m : (m as { default?: string })?.default || ''))
       .filter(Boolean)
       .sort(); // alphabetical order for consistency
   } catch (e) {

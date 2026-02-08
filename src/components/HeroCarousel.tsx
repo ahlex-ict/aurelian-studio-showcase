@@ -19,15 +19,6 @@ const HeroCarousel = () => {
   
   // Extract all images from portfolio projects for carousel
   const images = portfolioProjects.flatMap(p => p.images);
-
-  if (images.length === 0) {
-    return (
-      <section className="w-full py-16 bg-black" aria-hidden>
-        {/* No images available */}
-      </section>
-    );
-  }
-
   /**
    * Automatic carousel rotation
    * Changes slide every 5 seconds
@@ -36,9 +27,17 @@ const HeroCarousel = () => {
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % Math.max(1, images.length));
     }, 5000);
-    
+
     return () => clearInterval(interval);
   }, [images.length]);
+
+  if (images.length === 0) {
+    return (
+      <section className="w-full py-16 bg-black" aria-hidden>
+        {/* No images available */}
+      </section>
+    );
+  }
 
   const goToPrevious = () => {
     setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);

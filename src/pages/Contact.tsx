@@ -20,8 +20,21 @@ const Contact = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const { name, email, subject, message } = formData;
+    
+    // Get contact email from environment variable
+    const contactEmail = import.meta.env.VITE_CONTACT_EMAIL;
+    
+    if (!contactEmail) {
+      toast({
+        title: "Configuration Error",
+        description: "Contact email is not configured. Please try again later.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     const body = `Name: ${name}\nEmail: ${email}\n\n${message}`;
-    const mailto = `mailto:contact.aurelianstudios@gmail.com?subject=${encodeURIComponent(
+    const mailto = `mailto:${encodeURIComponent(contactEmail)}?subject=${encodeURIComponent(
       subject || "Contact from website",
     )}&body=${encodeURIComponent(body)}`;
     // Open user's email client with prefilled message
@@ -152,7 +165,9 @@ const Contact = () => {
               <div className="space-y-4">
                 <div className="flex items-center gap-4">
                   <Mail className="text-primary" size={24} />
-                  <span>contact.aurelianstudios@gmail.com</span>
+                  <span>
+                    {import.meta.env.VITE_CONTACT_EMAIL || "contact@aurelianstudios.com"}
+                  </span>
                 </div>
                 <div className="flex items-center gap-4">
                   <MapPin className="text-primary" size={24} />

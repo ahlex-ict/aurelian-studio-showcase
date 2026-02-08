@@ -15,6 +15,9 @@ export default defineConfig(({ mode }) => ({
       "X-XSS-Protection": "1; mode=block",
       "Referrer-Policy": "strict-origin-when-cross-origin",
       "Permissions-Policy": "geolocation=(), microphone=(), camera=(), payment=()",
+      "Content-Security-Policy": "default-src 'self'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self' https://fonts.googleapis.com; connect-src 'self' https:; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
+      "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+      "X-Permitted-Cross-Domain-Policies": "none",
     },
   },
   plugins: [react()],
@@ -27,5 +30,7 @@ export default defineConfig(({ mode }) => ({
     rollupOptions: {
       input: path.resolve(__dirname, "index.html"),
     },
+    // Minimize source maps in production to reduce attack surface
+    sourcemap: mode === "development",
   },
 }));

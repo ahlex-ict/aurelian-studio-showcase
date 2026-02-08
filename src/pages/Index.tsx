@@ -29,9 +29,9 @@ const Index = () => {
       <Header />
 
       {/* Simple Black Landing Section */}
-      <section className="w-full bg-black py-20 md:py-32">
+      <section className="w-full bg-black pt-20 pb-10 md:pt-24 md:pb-10">
         <div className="max-w-5xl mx-auto px-4 flex flex-col items-center justify-center">
-          <img src={logoFull} alt="Aurelian Studios" className="h-32 md:h-48 lg:h-64 w-auto" />
+          <img src={logoFull} alt="Aurelian Studios" className="h-[22vh] md:h-[32vh] lg:h-[42vh] w-auto" />
         </div>
       </section>
 
